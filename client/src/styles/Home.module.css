@@ -1,0 +1,159 @@
+/* Home.module.css */
+/* You can keep all your original custom CSS here */
+
+/* Note: Tailwind CSS utilities don't need to be redefined here */
+
+/* Glass cards */
+.feature-card {
+    background: rgba(255, 255, 255, 0.07);
+    -webkit-backdrop-filter: blur(12px);
+    backdrop-filter: blur(12px);
+    border-radius: 1.1rem;
+    box-shadow: 0 2px 26px 0 rgba(56, 87, 213, 0.11);
+    border: 1.5px solid rgba(129, 140, 248, 0.13);
+    transition: transform 0.18s cubic-bezier(0.28, 0.86, 0.41, 0.99),
+      box-shadow 0.18s cubic-bezier(0.28, 0.86, 0.41, 0.99),
+      border 0.2s;
+  }
+  .feature-card:hover,
+  .feature-card:focus-within {
+    transform: translateY(-3px) scale(1.045);
+    box-shadow: 0 6px 26px 0 #60a5fa33, 0 0px 64px #818cf899;
+    border-color: #818cf8cc;
+    outline: none;
+  }
+  
+  /* Animations */
+  @keyframes blob {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.1) translateY(-40px);
+    }
+  }
+  .animate-blob {
+    animation: blob 24s infinite ease-in-out;
+  }
+  
+  @keyframes bounce {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+  .animate-bounce-slow {
+    animation: bounce 3s infinite cubic-bezier(0.5, 0.05, 1, 0.5);
+  }
+  
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  .animate-spin-slow {
+    animation: spin 6s linear infinite;
+  }
+  
+  @keyframes fadein {
+    from {
+      opacity: 0;
+      transform: translateY(40px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-fadein {
+    animation: fadein 1.5s cubic-bezier(0.28, 0.86, 0.41, 0.99);
+  }
+  
+  @keyframes parallax {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(10px) scale(1.07);
+    }
+  }
+  .animate-fadein-parallax {
+    animation: fadein 2.6s, parallax 12s infinite linear;
+  }
+  
+  @keyframes slideIn {
+    from {
+      opacity: 0;
+      transform: translateY(60px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  .animate-slideIn {
+    animation: slideIn 1.2s cubic-bezier(0.4, 0, 0.2, 1);
+  }
+  
+  /* Modal open/close handled by React state, no CSS changes needed */
+  
+  /* Responsive tweaks */
+  @media (max-width: 640px) {
+    .feature-card {
+      padding: 1rem;
+      font-size: 0.97rem;
+    }
+    .hero h2 {
+      font-size: 1.4rem;
+    }
+  }
+  
+  @media (min-width: 1024px) {
+    .hero-section {
+      padding-top: 6rem;
+      padding-bottom: 6rem;
+    }
+  }
+  
+  /* Focus accessibility */
+  a:focus,
+  button:focus,
+  input:focus,
+  .feature-card:focus {
+    outline: 2px solid #c7d2fe;
+    outline-offset: 3px;
+    box-shadow: 0 0 0 2px #c7d2fe99;
+  }
+  
+  /* Body theme classes for dark/light toggling */
+  /* These classes referenced in JS to add/remove */
+  
+  .bgGradientToBr {
+    background-image: linear-gradient(to bottom right, var(--tw-gradient-stops));
+  }
+  .fromColorDark1 {
+    --tw-gradient-from: #101728;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(24 40 72 / 0));
+  }
+  .toColorDark2 {
+    --tw-gradient-to: #182848;
+  }
+  .textWhite {
+    color: white;
+  }
+  .fromColorLight1 {
+    --tw-gradient-from: #e0e7ef;
+    --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to, rgb(243 246 252 / 0));
+  }
+  .toColorLight2 {
+    --tw-gradient-to: #f3f6fc;
+  }
+  .textGray800 {
+    color: #1f2937;
+  }
+  
