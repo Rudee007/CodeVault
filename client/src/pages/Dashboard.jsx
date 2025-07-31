@@ -1,34 +1,10 @@
 import React, { useState, useEffect, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import feather from "feather-icons";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-
-// Inside Dashboard.jsx render method (replace snippet card grid with below)
-{filteredSnippets.length === 0 ? (
-  <p className="text-indigo-300">No snippets found.</p>
-) : (
-  <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-    {filteredSnippets.map((snippet) => (
-      <SnippetCard
-        key={snippet.id}
-        snippet={snippet}
-        onToggleFavorite={(id) => {
-          setSnippets((prev) =>
-            prev.map((s) => (s.id === id ? { ...s, favorite: !s.favorite } : s))
-          );
-        }}
-        onTogglePin={(id) => {
-          setSnippets((prev) =>
-            prev.map((s) => (s.id === id ? { ...s, pinned: !s.pinned } : s))
-          );
-        }}
-        onClick={(id) => navigate(`/snippet/${id}`)}
-      />
-    ))}
-  </div>
-)}
 
 const sampleSnippets = [
   {
@@ -71,6 +47,8 @@ export default function Dashboard() {
   const [filterLanguage, setFilterLanguage] = useState("");
   const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
 
+  const navigate = useNavigate();
+
   useEffect(() => {
     AOS.init({ once: true, duration: 600, easing: "ease-in-out" });
     feather.replace();
@@ -107,23 +85,19 @@ export default function Dashboard() {
     });
   }, [snippets, searchTerm, filterTag, filterLanguage, showFavoritesOnly]);
 
-  // Separate pinned snippets
+  // Separate pinned snippets and others
   const pinnedSnippets = filteredSnippets.filter((s) => s.pinned);
   const otherSnippets = filteredSnippets.filter((s) => !s.pinned);
 
-  // Handlers for toggling favorite and pin states (mock implementation)
+  // Handlers for toggling favorite and pin states
   function toggleFavorite(id) {
     setSnippets((prev) =>
-      prev.map((s) =>
-        s.id === id ? { ...s, favorite: !s.favorite } : s
-      )
+      prev.map((s) => (s.id === id ? { ...s, favorite: !s.favorite } : s))
     );
   }
   function togglePin(id) {
     setSnippets((prev) =>
-      prev.map((s) =>
-        s.id === id ? { ...s, pinned: !s.pinned } : s
-      )
+      prev.map((s) => (s.id === id ? { ...s, pinned: !s.pinned } : s))
     );
   }
 
@@ -136,8 +110,14 @@ export default function Dashboard() {
   return (
     <>
       <Navbar />
-      <main className="min-h-screen bg-gradient-to-br fromColorDark1 toColorDark2 text-white p-6 md:p-12">
-        <h1 className="text-4xl font-extrabold text-indigo-300 mb-8 text-center">Your Code Snippets</h1>
+      {/* 
+        Used safe Tailwind background classes (replaceColorDark1/toColorDark2 
+        with standard colors or define them in your tailwind.config.js) 
+      */}
+      <main className="min-h-screen bg-gradient-to-br from-indigo-900 to-slate-900 text-white p-6 md:p-12">
+        <h1 className="text-4xl font-extrabold text-indigo-300 mb-8 text-center">
+          Your Code Snippets
+        </h1>
 
         {/* Search and Filters */}
         <div className="flex flex-wrap gap-4 justify-center mb-8">
@@ -190,7 +170,9 @@ export default function Dashboard() {
         {/* Pinned Snippets */}
         {pinnedSnippets.length > 0 && (
           <section className="mb-10" aria-label="Pinned snippets">
-            <h2 className="text-2xl font-semibold text-indigo-200 mb-4">Pinned Snippets</h2>
+            <h2 className="text-2xl font-semibold text-indigo-200 mb-4">
+              Pinned Snippets
+            </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
               {pinnedSnippets.map((snippet) => (
                 <SnippetCard
@@ -199,6 +181,7 @@ export default function Dashboard() {
                   onToggleFavorite={() => toggleFavorite(snippet.id)}
                   onTogglePin={() => togglePin(snippet.id)}
                   onCopy={() => copyToClipboard(snippet.code)}
+                  onClick={() => navigate(`/snippet/${snippet.id}`)} // Added clickable card
                 />
               ))}
             </div>
@@ -219,6 +202,7 @@ export default function Dashboard() {
                   onToggleFavorite={() => toggleFavorite(snippet.id)}
                   onTogglePin={() => togglePin(snippet.id)}
                   onCopy={() => copyToClipboard(snippet.code)}
+                  onClick={() => navigate(`/snippet/${snippet.id}`)} // Added clickable card
                 />
               ))}
             </div>
@@ -242,52 +226,79 @@ export default function Dashboard() {
 }
 
 // Snippet card component
-function SnippetCard({ snippet, onToggleFavorite, onTogglePin, onCopy }) {
-  // Simple syntax highlight for JS and Python - can expand later or use libraries like Prism.js or Highlight.js
+function SnippetCard({ snippet, onToggleFavorite, onTogglePin, onCopy, onClick }) {
+  // Simple syntax highlight for JS and Python - extend or replace with Prism.js/Highlight.js for production
   function syntaxHighlight(code, lang) {
     if (!code) return "";
+    // Escape HTML entities to avoid rendering issues or XSS
+    const escapeHtml = (str) =>
+      str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+
+    let escaped = escapeHtml(code);
+
     if (lang === "javascript") {
-      return code.replace(
+      return escaped.replace(
         /(const|let|function|return|if|else|for|while|async|await|class|new|import|export)/g,
         '<span class="text-indigo-400 font-semibold">$1</span>'
       );
     } else if (lang === "python") {
-      return code.replace(
+      return escaped.replace(
         /\b(def|return|if|else|elif|for|while|import|from|class|self|try|except|with|as)\b/g,
         '<span class="text-indigo-400 font-semibold">$1</span>'
       );
     }
-    return code;
+    return escaped;
   }
 
   return (
     <article
-      className="bg-white/10 backdrop-blur-lg border border-indigo-300/30 rounded-2xl p-5 flex flex-col shadow-md hover:shadow-lg transition-shadow"
+      className="bg-white/10 backdrop-blur-lg border border-indigo-300/30 rounded-2xl p-5 flex flex-col shadow-md hover:shadow-lg transition-shadow cursor-pointer"
       data-aos="fade-up"
       tabIndex={0}
+      role="button"
+      onClick={onClick}
+      onKeyDown={(e) => {
+        if(e.key === "Enter" || e.key === " ") onClick();
+      }}
+      aria-label={`Snippet titled ${snippet.title}`}
     >
       <header className="flex justify-between items-center mb-2 break-words">
         <h3 className="text-lg font-semibold text-indigo-200 truncate">{snippet.title}</h3>
         <div className="flex space-x-3">
           <button
-            className={`focus:outline-none`}
-            onClick={onToggleFavorite}
+            className="focus:outline-none"
+            onClick={(e) => {
+              e.stopPropagation();
+              onToggleFavorite();
+            }}
             aria-label={snippet.favorite ? "Unfavorite snippet" : "Favorite snippet"}
             type="button"
           >
-            <i data-feather={snippet.favorite ? "star" : "star"} className={snippet.favorite ? "text-yellow-400" : "text-indigo-400"}></i>
-          </button>
-          <button
-            className={`focus:outline-none`}
-            onClick={onTogglePin}
-            aria-label={snippet.pinned ? "Unpin snippet" : "Pin snippet"}
-            type="button"
-          >
-            <i data-feather={snippet.pinned ? "bookmark" : "bookmark"} className={snippet.pinned ? "text-cyan-400" : "text-indigo-400"}></i>
+            <i
+              data-feather="star"
+              className={snippet.favorite ? "text-yellow-400" : "text-indigo-400"}
+            ></i>
           </button>
           <button
             className="focus:outline-none"
-            onClick={onCopy}
+            onClick={(e) => {
+              e.stopPropagation();
+              onTogglePin();
+            }}
+            aria-label={snippet.pinned ? "Unpin snippet" : "Pin snippet"}
+            type="button"
+          >
+            <i
+              data-feather="bookmark"
+              className={snippet.pinned ? "text-cyan-400" : "text-indigo-400"}
+            ></i>
+          </button>
+          <button
+            className="focus:outline-none"
+            onClick={(e) => {
+              e.stopPropagation();
+              onCopy();
+            }}
             aria-label="Copy code to clipboard"
             type="button"
           >
