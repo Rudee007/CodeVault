@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 import styles from "../styles/Home.module.css";
 import AOS from "aos";
 import "aos/dist/aos.css";
@@ -25,19 +26,16 @@ export default function Home() {
     AOS.init();
     feather.replace();
 
-    // AI carousel interval
     const interval = setInterval(() => {
       setCarouselIndex((idx) => (idx + 1) % carouselData.length);
     }, 3100);
 
-    // Set body theme classes
     updateBodyTheme(themeDark);
 
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    // Update body class on theme change
     updateBodyTheme(themeDark);
   }, [themeDark]);
 
@@ -83,56 +81,7 @@ export default function Home() {
 
   return (
     <>
-      {/* Navbar */}
-      <header className="bg-white/5 backdrop-blur-xl sticky top-0 z-50 shadow shadow-indigo-950/10">
-        <div className="container mx-auto flex justify-between items-center px-6 py-3">
-          <h1 className="text-2xl font-bold tracking-tight bg-gradient-to-r from-indigo-400 via-cyan-400 to-indigo-200 bg-clip-text text-transparent select-none">
-            CodeVault
-          </h1>
-          <nav className="space-x-4 flex items-center">
-            <a
-              href="#"
-              className="hover:text-indigo-400 font-medium transition-colors"
-              aria-current="page"
-            >
-              Home
-            </a>
-            <a
-              href="#features"
-              className="hover:text-indigo-400 font-medium transition-colors"
-            >
-              Features
-            </a>
-            <a
-              href="#why"
-              className="hover:text-indigo-400 font-medium transition-colors"
-            >
-              Why Us
-            </a>
-            <a
-              href="#about"
-              className="hover:text-indigo-400 font-medium transition-colors"
-            >
-              About
-            </a>
-            <button
-              id="mode-toggle"
-              className="ml-3 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
-              aria-label="Toggle Dark Mode"
-              onClick={toggleTheme}
-              type="button"
-            >
-              <i data-feather={themeDark ? "sun" : "moon"}></i>
-            </button>
-            <a
-              href="#"
-              className="ml-3 rounded-lg bg-gradient-to-r from-indigo-600 to-cyan-500 px-4 py-2 font-bold text-white shadow hover:shadow-lg transition-transform hover:-translate-y-[2px]"
-            >
-              Login
-            </a>
-          </nav>
-        </div>
-      </header>
+      
 
       {/* Hero */}
       <section className="hero relative text-center py-24 sm:py-28 px-4 flex flex-col items-center justify-center">
@@ -169,20 +118,20 @@ export default function Home() {
           data-aos="fade-up"
           data-aos-delay="300"
         >
-          <a
-            href="#"
+          <Link
+            to="/signup"
             className="bg-gradient-to-r from-indigo-500 to-cyan-400 text-white px-8 py-3 rounded-lg font-semibold shadow-lg hover:scale-105 transition-all btn"
             aria-label="Get Started"
           >
             Get Started
-          </a>
-          <a
-            href="#features"
+          </Link>
+          <Link
+            to="#features"
             className="border border-indigo-400 text-indigo-400 px-8 py-3 rounded-lg font-semibold hover:bg-indigo-500 hover:text-white transition-all btn"
             aria-label="Learn More"
           >
             Learn More
-          </a>
+          </Link>
         </div>
       </section>
 
