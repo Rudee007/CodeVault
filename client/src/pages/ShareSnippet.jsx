@@ -107,13 +107,7 @@ export default function ShareSnippet({ showToast }) {
 
   return (
     <>
-      <Navbar
-        isLoggedIn={false}
-        userName=""
-        themeDark={true}
-        toggleTheme={() => {}}
-        onLogout={() => {}}
-      />
+     
 
       <main className="min-h-screen bg-gradient-to-br from-indigo-950 to-cyan-900 pb-12 text-white px-3">
         <div className="container mx-auto max-w-xl py-8">

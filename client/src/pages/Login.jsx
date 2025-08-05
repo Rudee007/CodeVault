@@ -50,12 +50,7 @@ export default function Login({ showToast }) {
 
   return (
     <>
-      <Navbar 
-        isLoggedIn={false} 
-        themeDark={themeDark} 
-        toggleTheme={toggleTheme} 
-        onLogout={() => {}} 
-      />
+     
 
       <main className={`min-h-screen flex flex-col justify-center items-center px-4 bg-gradient-to-br from-indigo-900 to-cyan-900 ${themeDark ? "text-white" : "text-gray-900"}`}>
         <section

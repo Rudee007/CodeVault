@@ -31,14 +31,21 @@ export default function Navbar({ isLoggedIn = false, userName = "", onLogout, th
 
         {/* Desktop nav */}
         <nav className="hidden md:flex space-x-6 items-center" aria-label="Primary navigation">
+          {/* Always show Home for consistency */}
           <NavLink to="/" label="Home" currentPath={location.pathname} />
-          <NavLink to="/dashboard" label="Dashboard" currentPath={location.pathname} />
-          <NavLink to="/analytics" label="Analytics" currentPath={location.pathname} />
-          <NavLink to="/profile" label="Profile" currentPath={location.pathname} />
-          <NavLink to="/share/abc123" label="Share Snippet" currentPath={location.pathname} />
-          <NavLink to="/snippet/new" label="Add Snippet" currentPath={location.pathname} />
 
-          {/* Theme toggle button */}
+          {/* Show private links only if logged in */}
+          {isLoggedIn && (
+            <>
+              <NavLink to="/dashboard" label="Dashboard" currentPath={location.pathname} />
+              <NavLink to="/analytics" label="Analytics" currentPath={location.pathname} />
+              <NavLink to="/profile" label="Profile" currentPath={location.pathname} />
+              <NavLink to="/share/abc123" label="Share Snippet" currentPath={location.pathname} />
+              <NavLink to="/snippet/new" label="Add Snippet" currentPath={location.pathname} />
+            </>
+          )}
+
+          {/* Theme toggle button (always visible) */}
           <button
             id="mode-toggle"
             className="ml-3 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
@@ -88,13 +95,21 @@ export default function Navbar({ isLoggedIn = false, userName = "", onLogout, th
           className="md:hidden bg-[#1a1d27] bg-opacity-90 backdrop-blur-lg px-6 py-4 space-y-4"
           aria-label="Mobile primary navigation"
         >
+          {/* Always show Home */}
           <NavLink to="/" label="Home" currentPath={location.pathname} mobile />
-          <NavLink to="/dashboard" label="Dashboard" currentPath={location.pathname} mobile />
-          <NavLink to="/analytics" label="Analytics" currentPath={location.pathname} mobile />
-          <NavLink to="/profile" label="Profile" currentPath={location.pathname} mobile />
-          <NavLink to="/share/abc123" label="Share Snippet" currentPath={location.pathname} mobile />
-          <NavLink to="/snippet/new" label="Add Snippet" currentPath={location.pathname} mobile />
 
+          {/* Show private links only if logged in */}
+          {isLoggedIn && (
+            <>
+              <NavLink to="/dashboard" label="Dashboard" currentPath={location.pathname} mobile />
+              <NavLink to="/analytics" label="Analytics" currentPath={location.pathname} mobile />
+              <NavLink to="/profile" label="Profile" currentPath={location.pathname} mobile />
+              <NavLink to="/share/abc123" label="Share Snippet" currentPath={location.pathname} mobile />
+              <NavLink to="/snippet/new" label="Add Snippet" currentPath={location.pathname} mobile />
+            </>
+          )}
+
+          {/* Theme toggle button (always visible) */}
           <button
             className="w-full flex items-center justify-center gap-2 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition font-semibold text-indigo-300"
             type="button"
@@ -105,6 +120,7 @@ export default function Navbar({ isLoggedIn = false, userName = "", onLogout, th
             {themeDark ? "Light Mode" : "Dark Mode"}
           </button>
 
+          {/* Auth buttons */}
           {!isLoggedIn ? (
             <>
               <NavLink to="/login" label="Login" currentPath={location.pathname} mobile />

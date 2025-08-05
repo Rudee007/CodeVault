@@ -13,9 +13,12 @@
     "aos": "^2.3.4",
     "feather-icon": "^0.1.0",
     "feather-icons": "^4.29.2",
+    "prismjs": "^1.30.0",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-router-dom": "^7.7.1"
+    "react-router-dom": "^7.7.1",
+    "react-simple-code-editor": "^0.14.1",
+    "recharts": "^3.1.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.30.1",

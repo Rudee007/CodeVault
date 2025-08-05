@@ -94,13 +94,7 @@ export default function Profile({ showToast }) {
 
   return (
     <>
-      <Navbar
-        isLoggedIn={true}
-        userName={user.name}
-        themeDark={themeDark}
-        toggleTheme={toggleTheme}
-        onLogout={() => showToast("Logged out.")}
-      />
+      
 
       <main className={`min-h-screen pb-10 ${themeDark ? "text-white" : "text-gray-900"} bg-gradient-to-br from-indigo-950 to-cyan-900`}>
         <div className="container mx-auto max-w-2xl px-4 py-10">
