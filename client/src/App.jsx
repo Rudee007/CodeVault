@@ -46,7 +46,7 @@ export default function App() {
     // Add your log out logic here
   };
 
-  const isLoggedIn = true; // Replace with real auth state
+  const isLoggedIn = false; // Replace with real auth state
   const userName = "DevUser";
 
   return (

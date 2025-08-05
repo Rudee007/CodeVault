@@ -41,13 +41,7 @@ export default function Analytics({ showToast }) {
 
   return (
     <>
-      <Navbar
-        isLoggedIn={true}
-        userName="DemoUser"
-        themeDark={themeDark}
-        toggleTheme={toggleTheme}
-        onLogout={() => showToast("Logged out")}
-      />
+     
 
       <main className={`min-h-screen pt-10 px-4 pb-16 bg-gradient-to-br from-indigo-950 to-cyan-900 ${themeDark ? "text-white" : "text-gray-900"}`}>
         <div className="container mx-auto max-w-5xl space-y-10">

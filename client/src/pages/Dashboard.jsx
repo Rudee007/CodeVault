@@ -109,13 +109,7 @@ export default function Dashboard({ showToast }) {
 
   return (
     <>
-      <Navbar
-        isLoggedIn={true}
-        userName="DemoUser"
-        themeDark={themeDark}
-        toggleTheme={toggleTheme}
-        onLogout={() => showToast("Logged out")}
-      />
+     
 
       <main className={`min-h-screen pb-8 ${themeDark ? "text-white" : "text-gray-900"} bg-gradient-to-br from-indigo-950 to-cyan-900`}>
         {/* Title and FAB */}
