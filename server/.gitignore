@@ -1,0 +1,21 @@
+node_modules/          # dependency binaries ― always regenerate with npm/yarn[2]
+npm-debug.log*         # npm error logs[5]
+yarn-debug.log*
+yarn-error.log*
+package-lock.json.*    # ignore old lockfile backups created by npm
+
+.env                   # holds DB passwords, JWT secrets, API keys[8]
+
+.DS_Store              # macOS Finder metadata
+Thumbs.db              # Windows image cache
+*.swp                  # Vim swap files[7]
+*.swo
+.idea/                 # JetBrains IDE settings
+.vscode/launch*.json   # VS Code debug configs that contain hard-coded paths
+
+logs/
+*.log
+coverage/              # Istanbul/nyc test coverage output
+
+dist/
+build/
