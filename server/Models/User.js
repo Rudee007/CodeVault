@@ -1,5 +1,5 @@
 // server/models/User.js
-import mongoose from 'mongoose';
+const mongoose = require('mongoose');
 
 /* ---------- sub-schema for social-login providers ---------- */
 const providerSubSchema = new mongoose.Schema(
@@ -43,4 +43,4 @@ const userSchema = new mongoose.Schema(
 
 /* ---------- model export ---------- */
 const User = mongoose.model('User', userSchema);
-export default User;       // ES-module default export
+module.exports =  User;       // ES-module default export
