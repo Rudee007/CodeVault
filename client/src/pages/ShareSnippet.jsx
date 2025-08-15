@@ -7,7 +7,6 @@ import Prism from "prismjs";
 import feather from "feather-icons";
 import AOS from "aos";
 import "aos/dist/aos.css";
-import Navbar from "../components/Navbar";
 
 // Simulated backend fetch by shareId
 const demoShares = {

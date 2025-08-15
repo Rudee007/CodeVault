@@ -1,9 +1,11 @@
+// Updated Signup component with Google OAuth integration
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import feather from "feather-icons";
-import Navbar from "../components/Navbar";
+import axios from "axios";
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google"; // Import Google OAuth components
 
 export default function Signup({ showToast }) {
   const navigate = useNavigate();
@@ -16,13 +18,11 @@ export default function Signup({ showToast }) {
   });
 
   const [errors, setErrors] = useState({});
-
   const [themeDark, setThemeDark] = useState(() => {
     const saved = localStorage.getItem("theme");
     return saved !== "light"; // default dark
   });
 
-  // Theme toggle handler (local here)
   const toggleTheme = () => {
     setThemeDark((dark) => {
       const newTheme = !dark;
@@ -36,15 +36,12 @@ export default function Signup({ showToast }) {
     feather.replace();
   }, []);
 
-  // Basic client-side validation
   const validate = () => {
     const newErrors = {};
     if (!form.name.trim()) newErrors.name = "Name is required";
     if (!form.email.trim())
       newErrors.email = "Email is required";
-    else if (
-      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(form.email)
-    )
+    else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(form.email))
       newErrors.email = "Invalid email address";
 
     if (!form.password) newErrors.password = "Password is required";
@@ -65,24 +62,53 @@ export default function Signup({ showToast }) {
     setErrors({ ...errors, [e.target.name]: "" });
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (!validate()) {
       showToast("Please fix form errors", true);
       return;
     }
 
-    // Simulate signup API call
-    showToast("Signup successful! Redirecting to login...");
-    setTimeout(() => {
+    try {
+      const res = await axios.post("http://localhost:3003/api/auth/signup", {
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      });
+
+      console.log("Signup successful", res.data);
       navigate("/login");
-    }, 2000);
+    } catch (err) {
+      console.error("signup error", err.response?.data || err.message);
+      setErrors(err.response?.data || {});
+    }
+  };
+
+  // Updated Google Auth Function
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const res = await axios.post("http://localhost:3003/api/auth/google", {
+        credential: credentialResponse.credential, // Send the ID token to backend
+      });
+
+      console.log("Google signup successful", res.data);
+      // Assuming the backend returns a JWT token, store it (e.g., in localStorage)
+      localStorage.setItem("token", res.data.token);
+      // Navigate to dashboard
+      navigate("/dashboard");
+    } catch (err) {
+      console.error("Google signup error", err.response?.data || err.message);
+      showToast("Google signup failed", true);
+    }
+  };
+
+  const handleGoogleFailure = () => {
+    console.log("Google Login Failed");
+    showToast("Google signup failed", true);
   };
 
   return (
-    <>
-    
-
+    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID_HERE"> {/* Replace with your actual Google Client ID */}
       <main
         className={`min-h-screen flex flex-col justify-center items-center px-4 bg-gradient-to-br from-indigo-900 to-cyan-900 ${
           themeDark ? "text-white" : "text-gray-900"
@@ -110,19 +136,12 @@ export default function Signup({ showToast }) {
                 className={`w-full rounded-md bg-white/10 px-4 py-3 pl-12 placeholder-gray-400 focus:outline-indigo-400 focus:ring-2 focus:ring-indigo-500 transition ${
                   errors.name ? "border-red-500 border" : "border-transparent"
                 } text-white`}
-                aria-invalid={!!errors.name}
-                aria-describedby="name-error"
               />
               <span className="absolute left-4 top-3.5 text-indigo-400 pointer-events-none">
                 <i data-feather="user"></i>
               </span>
               {errors.name && (
-                <p
-                  className="text-red-400 text-xs mt-1 absolute left-0 bottom-[-20px]"
-                  id="name-error"
-                >
-                  {errors.name}
-                </p>
+                <p className="text-red-400 text-xs mt-1">{errors.name}</p>
               )}
             </div>
 
@@ -138,19 +157,12 @@ export default function Signup({ showToast }) {
                 className={`w-full rounded-md bg-white/10 px-4 py-3 pl-12 placeholder-gray-400 focus:outline-indigo-400 focus:ring-2 focus:ring-indigo-500 transition ${
                   errors.email ? "border-red-500 border" : "border-transparent"
                 } text-white`}
-                aria-invalid={!!errors.email}
-                aria-describedby="email-error"
               />
               <span className="absolute left-4 top-3.5 text-indigo-400 pointer-events-none">
                 <i data-feather="mail"></i>
               </span>
               {errors.email && (
-                <p
-                  className="text-red-400 text-xs mt-1 absolute left-0 bottom-[-20px]"
-                  id="email-error"
-                >
-                  {errors.email}
-                </p>
+                <p className="text-red-400 text-xs mt-1">{errors.email}</p>
               )}
             </div>
 
@@ -166,19 +178,12 @@ export default function Signup({ showToast }) {
                 className={`w-full rounded-md bg-white/10 px-4 py-3 pl-12 placeholder-gray-400 focus:outline-indigo-400 focus:ring-2 focus:ring-indigo-500 transition ${
                   errors.password ? "border-red-500 border" : "border-transparent"
                 } text-white`}
-                aria-invalid={!!errors.password}
-                aria-describedby="password-error"
               />
               <span className="absolute left-4 top-3.5 text-indigo-400 pointer-events-none">
                 <i data-feather="lock"></i>
               </span>
               {errors.password && (
-                <p
-                  className="text-red-400 text-xs mt-1 absolute left-0 bottom-[-20px]"
-                  id="password-error"
-                >
-                  {errors.password}
-                </p>
+                <p className="text-red-400 text-xs mt-1">{errors.password}</p>
               )}
             </div>
 
@@ -196,29 +201,31 @@ export default function Signup({ showToast }) {
                     ? "border-red-500 border"
                     : "border-transparent"
                 } text-white`}
-                aria-invalid={!!errors.confirmPassword}
-                aria-describedby="confirmPassword-error"
               />
               <span className="absolute left-4 top-3.5 text-indigo-400 pointer-events-none">
                 <i data-feather="lock"></i>
               </span>
               {errors.confirmPassword && (
-                <p
-                  className="text-red-400 text-xs mt-1 absolute left-0 bottom-[-20px]"
-                  id="confirmPassword-error"
-                >
+                <p className="text-red-400 text-xs mt-1">
                   {errors.confirmPassword}
                 </p>
               )}
             </div>
 
+            {/* Signup Button */}
             <button
               type="submit"
               className="w-full bg-gradient-to-r from-indigo-500 to-cyan-400 text-white px-5 py-3 rounded-lg font-semibold hover:scale-105 transition"
-              aria-label="Sign Up"
             >
               Sign Up
             </button>
+
+            {/* Google Auth Button - Replaced with GoogleLogin component */}
+            <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleFailure}
+              useOneTap // Optional: Enables one-tap sign-up
+            />
 
             <div className="text-center text-indigo-300 font-medium space-x-2 text-sm">
               <span>Already have an account?</span>
@@ -229,6 +236,6 @@ export default function Signup({ showToast }) {
           </form>
         </section>
       </main>
-    </>
+    </GoogleOAuthProvider>
   );
 }

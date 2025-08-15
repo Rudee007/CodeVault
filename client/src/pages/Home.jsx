@@ -10,7 +10,7 @@ export default function Home() {
   const [toastVisible, setToastVisible] = useState(false);
   const [themeDark, setThemeDark] = useState(() => {
     const saved = localStorage.getItem("theme");
-    return saved !== "light"; // default dark mode
+    return saved !== "dark"; // default dark mode
   });
   const [carouselIndex, setCarouselIndex] = useState(0);
 

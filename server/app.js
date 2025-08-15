@@ -6,10 +6,7 @@ const app = express();
 
 const authRoutes =  require('./routes/authRoutes');
 
-app.use(cors({
-    origin: 'http://localhost:3003',
-    methods: ['GET','POST','PUT','DELETE'],
-}));
+app.use(cors());
 
 
 app.use(express.json())
