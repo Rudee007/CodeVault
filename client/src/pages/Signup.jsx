@@ -93,9 +93,11 @@ export default function Signup({ showToast }) {
 
       console.log("Google signup successful", res.data);
       // Assuming the backend returns a JWT token, store it (e.g., in localStorage)
-      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("cv_token", res.data.token);
       // Navigate to dashboard
       navigate("/dashboard");
+      window.location.reload(); // <-- forces Navbar to update immediately
+
     } catch (err) {
       console.error("Google signup error", err.response?.data || err.message);
       showToast("Google signup failed", true);
@@ -108,7 +110,7 @@ export default function Signup({ showToast }) {
   };
 
   return (
-    <GoogleOAuthProvider clientId="YOUR_GOOGLE_CLIENT_ID_HERE"> {/* Replace with your actual Google Client ID */}
+    <GoogleOAuthProvider clientId="839742597149-lbkcmssge8ssh11oc7ds0ol2tbt1ra4s.apps.googleusercontent.com"> {/* Replace with your actual Google Client ID */}
       <main
         className={`min-h-screen flex flex-col justify-center items-center px-4 bg-gradient-to-br from-indigo-900 to-cyan-900 ${
           themeDark ? "text-white" : "text-gray-900"

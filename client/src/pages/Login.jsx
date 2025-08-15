@@ -4,7 +4,7 @@ import AOS from "aos";
 import "aos/dist/aos.css";
 import feather from "feather-icons";
 import axios from "axios";
-
+import { GoogleOAuthProvider,GoogleLogin } from "@react-oauth/google";
 export default function Login({ showToast }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
@@ -80,7 +80,36 @@ export default function Login({ showToast }) {
     }
   };
 
+  const handleGoogleSuccess = async (credentialResponse) => {
+    try {
+      const res = await axios.post("http://localhost:3003/api/auth/google", {
+        credential: credentialResponse.credential, // Send the ID token to backend
+      });
+
+      console.log("Google signup successful", res.data);
+      // Assuming the backend returns a JWT token, store it (e.g., in localStorage)
+      localStorage.setItem("cv_token", res.data.token);
+      // Navigate to dashboard
+      navigate("/dashboard");
+      window.location.reload(); // <-- forces Navbar to update immediately
+
+    } catch (err) {
+      console.error("Google signup error", err.response?.data || err.message);
+      showToast("Google signup failed", true);
+    }
+  };
+
+  const handleGoogleFailure = () => {
+    console.log("Google Login Failed");
+    showToast("Google signup failed", true);
+  };
+
+
+
   return (
+
+  <GoogleOAuthProvider clientId="839742597149-lbkcmssge8ssh11oc7ds0ol2tbt1ra4s.apps.googleusercontent.com"> {/* Replace with your actual Google Client ID */}
+    
     <main
       className={`min-h-screen flex flex-col justify-center items-center px-4 bg-gradient-to-br from-indigo-900 to-cyan-900 ${
         themeDark ? "text-white" : "text-gray-900"
@@ -135,6 +164,13 @@ export default function Login({ showToast }) {
             Login
           </button>
 
+          <GoogleLogin
+              onSuccess={handleGoogleSuccess}
+              onError={handleGoogleFailure}
+              useOneTap // Optional: Enables one-tap sign-up
+            />
+          
+
           <div className="text-center text-indigo-300 font-medium space-x-2 text-sm">
             <span>Don't have an account?</span>
             <Link to="/signup" className="hover:text-indigo-400 transition">
@@ -150,5 +186,8 @@ export default function Login({ showToast }) {
         </form>
       </section>
     </main>
+
+        </GoogleOAuthProvider>
+    
   );
 }

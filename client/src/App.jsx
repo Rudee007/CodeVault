@@ -1,6 +1,6 @@
 // src/App.jsx
 import React, { useState, useEffect } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useNavigate } from "react-router-dom";
 
 import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
@@ -14,19 +14,9 @@ import ShareSnippet from "./pages/ShareSnippet";
 import Analytics from "./pages/Analytics";
 import VerifyPage from "./pages/VerifyPage";
 
-export default function App() {
-  const [themeDark, setThemeDark] = useState(() => {
-    const saved = localStorage.getItem("theme");
-    return saved ? saved === "dark" : true; // default to dark if nothing saved
-  });
-
-  const toggleTheme = () => {
-    setThemeDark((prev) => {
-      const t = !prev;
-      localStorage.setItem("theme", t ? "dark" : "light");
-      return t;
-    });
-  };
+// Inner component so we can safely use useNavigate
+function AppContent({ themeDark, toggleTheme }) {
+  const navigate = useNavigate();
 
   // Auth state
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -68,15 +58,11 @@ export default function App() {
     setIsLoggedIn(false);
     setUserName("");
     showToast("Logged out successfully");
+    navigate("/"); // ✅ Redirect to home
   };
 
-  // Sync theme to body
-  useEffect(() => {
-    document.body.className = themeDark ? "dark-theme" : "light-theme";
-  }, [themeDark]);
-
   return (
-    <Router>
+    <>
       <Navbar
         isLoggedIn={isLoggedIn}
         userName={userName}
@@ -87,14 +73,8 @@ export default function App() {
 
       <Routes>
         <Route path="/" element={<Home showToast={showToast} />} />
-        <Route
-          path="/login"
-          element={<Login showToast={showToast} onLoginSuccess={handleLoginSuccess} />}
-        />
-        <Route
-          path="/signup"
-          element={<Signup showToast={showToast} onLoginSuccess={handleLoginSuccess} />}
-        />
+        <Route path="/login" element={<Login showToast={showToast} onLoginSuccess={handleLoginSuccess} />} />
+        <Route path="/signup" element={<Signup showToast={showToast} onLoginSuccess={handleLoginSuccess} />} />
         <Route path="/forgot-password" element={<ForgotPassword showToast={showToast} />} />
         <Route path="/dashboard" element={<Dashboard showToast={showToast} />} />
         <Route path="/profile" element={<Profile showToast={showToast} />} />
@@ -115,6 +95,31 @@ export default function App() {
           {toastMessage}
         </div>
       )}
+    </>
+  );
+}
+
+export default function App() {
+  const [themeDark, setThemeDark] = useState(() => {
+    const saved = localStorage.getItem("theme");
+    return saved ? saved === "dark" : true;
+  });
+
+  const toggleTheme = () => {
+    setThemeDark((prev) => {
+      const t = !prev;
+      localStorage.setItem("theme", t ? "dark" : "light");
+      return t;
+    });
+  };
+
+  useEffect(() => {
+    document.body.className = themeDark ? "dark-theme" : "light-theme";
+  }, [themeDark]);
+
+  return (
+    <Router>
+      <AppContent themeDark={themeDark} toggleTheme={toggleTheme} />
     </Router>
   );
 }
