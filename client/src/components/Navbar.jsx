@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import feather from "feather-icons";
 
-export default function Navbar({ isLoggedIn = false, userName = "", onLogout, themeDark, toggleTheme }) {
+export default function Navbar({ isLoggedIn = false, userName = "", onLogout }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const location = useLocation();
 
@@ -17,7 +17,7 @@ export default function Navbar({ isLoggedIn = false, userName = "", onLogout, th
 
   return (
     <header
-      className="bg-white/5 backdrop-blur-xl sticky top-0 z-50 shadow shadow-indigo-950/10"
+      className="bg-[#1a1d27] backdrop-blur-xl sticky top-0 z-50 shadow shadow-indigo-950/10"
       role="banner"
     >
       <div className="container mx-auto flex justify-between items-center px-6 py-3 max-w-7xl">
@@ -44,17 +44,6 @@ export default function Navbar({ isLoggedIn = false, userName = "", onLogout, th
               <NavLink to="/snippet/new" label="Add Snippet" currentPath={location.pathname} />
             </>
           )}
-
-          {/* Theme toggle button (always visible) */}
-          <button
-            id="mode-toggle"
-            className="ml-3 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition"
-            aria-label="Toggle Dark Mode"
-            onClick={toggleTheme}
-            type="button"
-          >
-            <i data-feather={themeDark ? "sun" : "moon"}></i>
-          </button>
 
           {/* Auth buttons */}
           {!isLoggedIn ? (
@@ -108,17 +97,6 @@ export default function Navbar({ isLoggedIn = false, userName = "", onLogout, th
               <NavLink to="/snippet/new" label="Add Snippet" currentPath={location.pathname} mobile />
             </>
           )}
-
-          {/* Theme toggle button (always visible) */}
-          <button
-            className="w-full flex items-center justify-center gap-2 p-2 rounded-lg bg-white/10 hover:bg-white/20 transition font-semibold text-indigo-300"
-            type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle Dark Mode"
-          >
-            <i data-feather={themeDark ? "sun" : "moon"}></i>
-            {themeDark ? "Light Mode" : "Dark Mode"}
-          </button>
 
           {/* Auth buttons */}
           {!isLoggedIn ? (

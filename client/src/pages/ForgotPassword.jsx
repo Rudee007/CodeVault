@@ -1,5 +1,3 @@
-// src/pages/ForgotPassword.jsx
-
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AOS from "aos";
@@ -11,19 +9,6 @@ export default function ForgotPassword({ showToast }) {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const [themeDark, setThemeDark] = useState(() => {
-    const saved = localStorage.getItem("theme");
-    return saved !== "light";
-  });
-
-  // Theme toggle handler (local)
-  const toggleTheme = () => {
-    setThemeDark((prev) => {
-      const newTheme = !prev;
-      localStorage.setItem("theme", newTheme ? "dark" : "light");
-      return newTheme;
-    });
-  };
 
   useEffect(() => {
     AOS.init({ once: true });
@@ -58,22 +43,32 @@ export default function ForgotPassword({ showToast }) {
 
   return (
     <>
-     
-
       <main
-        className={`min-h-screen flex flex-col justify-center items-center px-4 bg-gradient-to-br from-indigo-900 to-cyan-900 ${
-          themeDark ? "text-white" : "text-gray-900"
-        }`}
+        className="relative min-h-screen flex flex-col justify-center items-center px-4 bg-gradient-to-br fromColorDark1 toColorDark2 textWhite overflow-hidden"
       >
+        {/* Background decorative blurred blobs */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-40 -left-40 w-96 h-96 rounded-full bg-indigo-700/30 filter blur-3xl animate-blob"
+        ></div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-20 right-20 w-72 h-72 rounded-full bg-cyan-500/25 filter blur-3xl animate-blob animation-delay-2000"
+        ></div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-20 right-1/2 w-64 h-64 rounded-full bg-purple-600/20 filter blur-2xl animate-blob animation-delay-4000"
+        ></div>
+
         <section
-          className="bg-[#1a1d27] rounded-2xl shadow-lg max-w-md w-full p-8"
+          className="feature-card max-w-md w-full p-8 animate-fadein relative z-10"
           data-aos="zoom-in"
           aria-label="Forgot Password Form"
         >
           <h2 className="text-3xl font-extrabold text-indigo-300 mb-6 text-center">
             Forgot your password?
           </h2>
-          <p className="text-gray-300 mb-6 text-center text-sm">
+          <p className="text-indigo-300 mb-6 text-center text-sm">
             Enter your email to receive a password reset link.
           </p>
 

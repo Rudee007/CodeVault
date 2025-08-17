@@ -1,11 +1,10 @@
-// Updated Signup component with Google OAuth integration
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import feather from "feather-icons";
 import axios from "axios";
-import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google"; // Import Google OAuth components
+import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
 export default function Signup({ showToast }) {
   const navigate = useNavigate();
@@ -18,18 +17,6 @@ export default function Signup({ showToast }) {
   });
 
   const [errors, setErrors] = useState({});
-  const [themeDark, setThemeDark] = useState(() => {
-    const saved = localStorage.getItem("theme");
-    return saved !== "light"; // default dark
-  });
-
-  const toggleTheme = () => {
-    setThemeDark((dark) => {
-      const newTheme = !dark;
-      localStorage.setItem("theme", newTheme ? "dark" : "light");
-      return newTheme;
-    });
-  };
 
   useEffect(() => {
     AOS.init({ once: true });
@@ -41,7 +28,9 @@ export default function Signup({ showToast }) {
     if (!form.name.trim()) newErrors.name = "Name is required";
     if (!form.email.trim())
       newErrors.email = "Email is required";
-    else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(form.email))
+    else if (
+      !/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(form.email)
+    )
       newErrors.email = "Invalid email address";
 
     if (!form.password) newErrors.password = "Password is required";
@@ -68,36 +57,30 @@ export default function Signup({ showToast }) {
       showToast("Please fix form errors", true);
       return;
     }
-
     try {
       const res = await axios.post("http://localhost:3003/api/auth/signup", {
         name: form.name,
         email: form.email,
         password: form.password,
       });
-
       console.log("Signup successful", res.data);
       navigate("/login");
     } catch (err) {
       console.error("signup error", err.response?.data || err.message);
       setErrors(err.response?.data || {});
+      showToast("Signup failed", true);
     }
   };
 
-  // Updated Google Auth Function
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
       const res = await axios.post("http://localhost:3003/api/auth/google", {
-        credential: credentialResponse.credential, // Send the ID token to backend
+        credential: credentialResponse.credential,
       });
-
       console.log("Google signup successful", res.data);
-      // Assuming the backend returns a JWT token, store it (e.g., in localStorage)
       localStorage.setItem("cv_token", res.data.token);
-      // Navigate to dashboard
       navigate("/dashboard");
-      window.location.reload(); // <-- forces Navbar to update immediately
-
+      window.location.reload();
     } catch (err) {
       console.error("Google signup error", err.response?.data || err.message);
       showToast("Google signup failed", true);
@@ -110,14 +93,24 @@ export default function Signup({ showToast }) {
   };
 
   return (
-    <GoogleOAuthProvider clientId="839742597149-lbkcmssge8ssh11oc7ds0ol2tbt1ra4s.apps.googleusercontent.com"> {/* Replace with your actual Google Client ID */}
-      <main
-        className={`min-h-screen flex flex-col justify-center items-center px-4 bg-gradient-to-br from-indigo-900 to-cyan-900 ${
-          themeDark ? "text-white" : "text-gray-900"
-        }`}
-      >
+    <GoogleOAuthProvider clientId="839742597149-lbkcmssge8ssh11oc7ds0ol2tbt1ra4s.apps.googleusercontent.com">
+      <main className="relative min-h-screen flex flex-col justify-center items-center px-4 bg-gradient-to-br fromColorDark1 toColorDark2 textWhite overflow-hidden">
+        {/* Background decorative shapes */}
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute -top-40 -left-40 w-96 h-96 rounded-full bg-indigo-700/30 filter blur-3xl animate-blob"
+        ></div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-20 right-20 w-72 h-72 rounded-full bg-cyan-500/25 filter blur-3xl animate-blob animation-delay-2000"
+        ></div>
+        <div
+          aria-hidden="true"
+          className="pointer-events-none absolute top-20 right-1/2 w-64 h-64 rounded-full bg-purple-600/20 filter blur-2xl animate-blob animation-delay-4000"
+        ></div>
+
         <section
-          className="bg-[#1a1d27] rounded-2xl shadow-lg max-w-md w-full p-8"
+          className="feature-card max-w-md w-full p-8 animate-fadein relative z-10"
           data-aos="zoom-in"
           aria-label="Signup Form"
         >
@@ -222,11 +215,11 @@ export default function Signup({ showToast }) {
               Sign Up
             </button>
 
-            {/* Google Auth Button - Replaced with GoogleLogin component */}
+            {/* Google Auth Button */}
             <GoogleLogin
               onSuccess={handleGoogleSuccess}
               onError={handleGoogleFailure}
-              useOneTap // Optional: Enables one-tap sign-up
+              useOneTap
             />
 
             <div className="text-center text-indigo-300 font-medium space-x-2 text-sm">
