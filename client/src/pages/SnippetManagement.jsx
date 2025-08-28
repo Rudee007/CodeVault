@@ -12,7 +12,6 @@ import "prismjs/components/prism-python";
 import "prismjs/components/prism-sql";
 import "prismjs/components/prism-markup";
 import "prismjs/components/prism-json";
-import Navbar from "../components/Navbar";
 
 const languageOptions = [
   "JavaScript", "Python", "SQL", "HTML", "JSON", "Other"

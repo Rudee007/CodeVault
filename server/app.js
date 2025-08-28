@@ -1,20 +1,47 @@
+// app.js
 const express = require('express');
 const cors = require('cors');
-const connectDB = require("./config/db");
+const mongoose = require('mongoose');
+require('dotenv').config();
+
 const app = express();
 
+// Middleware
 
-const authRoutes =  require('./routes/authRoutes');
 
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+// Connect to MongoDB
+mongoose.connect(process.env.MONGO_URI, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+})
+.then(() => console.log('MongoDB connected'))
+.catch(err => console.error('MongoDB connection error:', err));
 
-app.use(express.json())
+// Routes
+const authRoutes = require('./routes/authRoutes'); // Your existing auth routes
+const snippetRoutes = require('./routes/snippetRoutes'); // New snippet routes
+
 app.use('/api/auth', authRoutes);
-connectDB();
-const PORT = 3003
+app.use('/api/snippets', snippetRoutes); // All snippet routes will be prefixed with /api/snippets
 
-app.listen(PORT, () => {
-
-    console.log(`server is running on port ${PORT}`);
+// Error handling middleware
+app.use((err, req, res, next) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Something went wrong!' });
 });
+
+// 404 handler
+app.use((req, res) => {
+  res.status(404).json({ message: 'Route not found' });
+});
+
+const PORT =  3003;
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
+
+module.exports = app;
