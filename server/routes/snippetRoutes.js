@@ -1,3 +1,4 @@
+// routes/snippetRoutes.js
 const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
@@ -6,13 +7,22 @@ const snippetController = require('../controllers/snippetController');
 // Apply auth middleware to all routes
 router.use(authMiddleware);
 
-/* ==================== SNIPPET ROUTES ==================== */
+/* ==================== SNIPPET CRUD ROUTES ==================== */
 
 // GET /api/snippets - Get all snippets with filters and pagination
 router.get('/', snippetController.getSnippets);
 
-// GET /api/snippets/user/me - Get current user's snippets
+// GET /api/snippets/user/me - Get current user's snippets (MUST be before /:id)
 router.get('/user/me', snippetController.getMySnippets);
+
+// GET /api/snippets/search - Advanced search with facets (MUST be before /:id)
+router.get('/search', snippetController.searchSnippets);
+
+// GET /api/snippets/trending - Get trending snippets (MUST be before /:id)
+router.get('/trending', snippetController.getTrending);
+
+// POST /api/snippets/ai/generate - AI generate description/summary/tags
+router.post('/ai/generate', snippetController.generateDescription);
 
 // POST /api/snippets - Create a new snippet
 router.post('/', snippetController.createSnippet);

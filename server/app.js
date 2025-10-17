@@ -7,8 +7,6 @@ require('dotenv').config();
 const app = express();
 
 // Middleware
-
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
@@ -22,16 +20,24 @@ mongoose.connect(process.env.MONGO_URI, {
 .catch(err => console.error('MongoDB connection error:', err));
 
 // Routes
-const authRoutes = require('./routes/authRoutes'); // Your existing auth routes
-const snippetRoutes = require('./routes/snippetRoutes'); // New snippet routes
+const authRoutes = require('./routes/authRoutes');
+const snippetRoutes = require('./routes/snippetRoutes'); // ✅ Only this one
 
 app.use('/api/auth', authRoutes);
-app.use('/api/snippets', snippetRoutes); // All snippet routes will be prefixed with /api/snippets
+app.use('/api/snippets', snippetRoutes); // ✅ All snippet routes here
+
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.json({ status: 'OK', timestamp: new Date().toISOString() });
+});
 
 // Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ message: 'Something went wrong!' });
+  res.status(500).json({ 
+    message: 'Something went wrong!',
+    error: process.env.NODE_ENV === 'development' ? err.message : 'Internal server error'
+  });
 });
 
 // 404 handler
@@ -39,9 +45,10 @@ app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });
 
-const PORT =  3003;
+const PORT = process.env.PORT || 3003;
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
+  console.log(`📊 Health check: http://localhost:${PORT}/health`);
 });
 
 module.exports = app;
