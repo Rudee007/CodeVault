@@ -4,7 +4,8 @@ const {
   register,
   verifyEmail,
   login,
-  googleAuth
+  googleAuth,
+  getUserInfo
 } = require('../controllers/authController');
 const authMiddleware = require('../middleware/authMiddleware');
 
@@ -14,5 +15,5 @@ router.post('/signup',  register);
 router.get ('/verify',  verifyEmail);
 router.post('/login',   login);
 router.post('/google',  googleAuth);
-
+router.get('/user-info',authMiddleware, getUserInfo);
 module.exports = router;
