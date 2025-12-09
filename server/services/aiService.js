@@ -3,11 +3,12 @@ const axios = require('axios');
 require('dotenv').config();
 
 const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
-const GEMINI_API_URL = 'https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent';
+const GEMINI_API_URL = 'https://generativelanguage.googleapis-2.0-flash:+';
 
 class AIService {
   constructor() {
     this.hasApiKey = GEMINI_API_KEY && GEMINI_API_KEY !== 'your_gemini_api_key_here';
+    console.log(this.hasApiKey)
   }
 
   async callGemini(prompt, temperature = 0.3) {
