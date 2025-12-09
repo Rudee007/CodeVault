@@ -15,6 +15,9 @@ import Analytics from "./pages/Analytics";
 import VerifyPage from "./pages/VerifyPage";
 import AIAnalysisStep from "./components/AIAnalysisStep";
 import SnippetView from './pages/SnippetView';
+import Shares from './pages/Shares';
+import PrivateSnippets from './pages/PrivateSnippets';
+import ShareLinkPage from './pages/ShareLinkPage';
 
 // Inner component so we can safely use useNavigate
 function AppContent({ themeDark, toggleTheme }) {
@@ -94,14 +97,16 @@ function AppContent({ themeDark, toggleTheme }) {
         <Route path="/verify" element={<VerifyPage onLoginSuccess={handleLoginSuccess} showToast={showToast} />} />
         
         {/* Shared Routes */}
-        <Route path="/share/:shareId" element={<ShareSnippet showToast={showToast} />} />
-        
+        {/* <Route path="/share/:shareId" element={<ShareSnippet showToast={showToast} />} /> */}
+        <Route path="/share/:shareId" element={<ShareLinkPage />} />
+
         {/* Protected Routes */}
         <Route path="/dashboard" element={<Dashboard showToast={showToast} isLoggedIn={isLoggedIn} />} />
         <Route path="/profile" element={<Profile showToast={showToast} isLoggedIn={isLoggedIn} />} />
         <Route path="/analytics" element={<Analytics showToast={showToast} isLoggedIn={isLoggedIn} />} />
-        <Route path="/snippet/view/:id" element={<SnippetView showToast={showToast} isLoggedIn={isLoggedIn}/>} />
-
+        <Route path="/snippet/view/:id" element={<SnippetView showToast={showToast} />} />
+        <Route path="/shares" element={<Shares showToast={showToast} />} />
+        <Route path="/private-snippets" element={<PrivateSnippets showToast={showToast} />} />
         
         {/* ✅ Snippet Wizard - Handles both create (/snippet/new) and edit (/snippet/:id) */}
         <Route path="/snippet/:id" element={<SnippetWizard showToast={showToast} isLoggedIn={isLoggedIn} />} />
