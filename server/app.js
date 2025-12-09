@@ -5,6 +5,7 @@ const mongoose = require('mongoose');
 require('dotenv').config();
 
 const app = express();
+const linkRoutes = require('./routes/linkRoutes');
 
 // Middleware
 app.use(express.json());
@@ -25,6 +26,7 @@ const snippetRoutes = require('./routes/snippetRoutes'); // ✅ Only this one
 
 app.use('/api/auth', authRoutes);
 app.use('/api/snippets', snippetRoutes); // ✅ All snippet routes here
+app.use('/api', linkRoutes);  // This registers all link routes
 
 // Health check endpoint
 app.get('/health', (req, res) => {

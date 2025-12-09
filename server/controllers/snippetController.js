@@ -1,4 +1,4 @@
-const Snippet = require('../Models/Snippet');
+const Snippet = require('../models/Snippet');
 const aiService = require('../services/aiService');
 const languageDetector = require('../services/languageDetector');
 
@@ -439,33 +439,28 @@ module.exports.copySnippet = async (req, res) => {
 /* ==================== GET USER'S SNIPPETS ==================== */
 module.exports.getMySnippets = async (req, res) => {
   try {
-    console.log('👤 Fetching snippets for user:', req.user._id);
-    
     const {
       page = 1,
       limit = 20,
-      archived = 'false',
-      pinned,
-      language,  // ✅ Changed from programmingLanguage
+      visibility, // ✅ NEW: filter by visibility
+      language,
       tags
     } = req.query;
 
-    // ✅ Build query with correct field names
     const query = { owner: req.user._id };
     
-    // ✅ REMOVED: isArchived check (field doesn't exist in your schema)
-    // query.isArchived = archived === 'true';
-    
-    if (pinned !== undefined) query.pinned = pinned === 'true';
-    if (language) query.language = language;  // ✅ Changed from programmingLanguage
+    // ✅ NEW: Support visibility filter
+    if (visibility) {
+      query.visibility = visibility;
+    }
+
+    if (language) query.language = language;
     if (tags) {
       const tagArray = Array.isArray(tags) ? tags : tags.split(',');
       query.tags = { $in: tagArray.map(tag => tag.toLowerCase().trim()) };
     }
 
     const skip = (parseInt(page) - 1) * parseInt(limit);
-
-    console.log('🔍 Query:', JSON.stringify(query, null, 2));
 
     const [snippets, total] = await Promise.all([
       Snippet.find(query)
@@ -476,9 +471,6 @@ module.exports.getMySnippets = async (req, res) => {
         .lean(),
       Snippet.countDocuments(query)
     ]);
-
-    console.log('✅ Found snippets:', snippets.length);
-    console.log('📊 Total:', total);
 
     res.json({
       snippets,
@@ -491,13 +483,14 @@ module.exports.getMySnippets = async (req, res) => {
       }
     });
   } catch (error) {
-    console.error('❌ Get my snippets error:', error);
+    console.error('Get my snippets error:', error);
     res.status(500).json({
       message: 'Failed to fetch your snippets',
       error: process.env.NODE_ENV === 'development' ? error.message : 'Internal server error'
     });
   }
 };
+
 
 /* ==================== ADVANCED SEARCH ==================== */
 module.exports.searchSnippets = async (req, res) => {

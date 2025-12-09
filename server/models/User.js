@@ -15,7 +15,7 @@ const userSchema = new mongoose.Schema(
   {
     /* core identity */
     name:  { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true, index: true },
+    email: { type: String, required: true, unique: true, lowercase: true },
 
     verification: {
       verified:  { type: Boolean, default: false },
@@ -32,6 +32,7 @@ const userSchema = new mongoose.Schema(
 
     /* misc metadata */
     role:        { type: String, enum: ['user', 'admin'], default: 'user' },
+    privateVaultPassword: { type: String, select: false },
     lastLoginAt: Date
   },
   { timestamps: true }   // adds createdAt & updatedAt automatically

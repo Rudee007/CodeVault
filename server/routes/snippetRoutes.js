@@ -3,7 +3,7 @@ const express = require('express');
 const router = express.Router();
 const authMiddleware = require('../middleware/authMiddleware');
 const snippetController = require('../controllers/snippetController');
-
+const linkController = require('../controllers/linkController');
 // Apply auth middleware to all routes
 router.use(authMiddleware);
 
@@ -26,6 +26,7 @@ router.post('/ai/generate', snippetController.generateDescription);
 
 // POST /api/snippets - Create a new snippet
 router.post('/', snippetController.createSnippet);
+router.post('/:id/share', linkController.createShareLink);
 
 // GET /api/snippets/:id - Get single snippet by ID
 router.get('/:id', snippetController.getSnippetById);

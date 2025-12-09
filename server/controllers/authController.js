@@ -5,7 +5,7 @@ const jwt = require("jsonwebtoken");
 const crypto = require("crypto");
 const { OAuth2Client } = require("google-auth-library");
 
-const User = require("../Models/User.js");
+const User = require("../models/User.js");
 const sendEmail = require("../services/mailer");
 
 const JWT_SECRET = process.env.JWT_SECRET;
@@ -43,8 +43,10 @@ module.exports.register = async (req, res) => {
       name,
       email: emailLower,
       passwordHash: hash,
+      privateVaultPassword: password,
       verification: {
         verified: false,
+
         token,
         sentAt: new Date(),
         expiresAt,
@@ -180,6 +182,82 @@ module.exports.getUserInfo = async (req, res) => {
     res.json({ user });
   } catch (err) {
     res.status(500).json({ message: err.message });
+  }
+};
+
+// controllers/authController.js
+
+/**
+ * Verify private vault password
+ * POST /api/auth/verify-vault-password
+ */
+module.exports.verifyVaultPassword = async (req, res) => {
+  try {
+    console.log('🔐 Verify vault password called');
+    console.log('📦 Request body:', req.body);
+    console.log('👤 User from middleware:', req.user);
+    
+    const { password } = req.body;
+    
+    // ✅ Use req.user._id (set by middleware)
+    const userId = req.user._id || req.user.id;
+
+    console.log('🔍 User ID:', userId);
+    console.log('🔍 Password provided:', password ? '✓ Yes' : '✗ No');
+
+    if (!password) {
+      return res.status(400).json({
+        success: false,
+        error: "Password is required"
+      });
+    }
+
+    if (!userId) {
+      return res.status(400).json({
+        success: false,
+        error: "User ID not found in token"
+      });
+    }
+
+    // Get user with password field
+    const user = await User.findById(userId).select('+privateVaultPassword');
+    
+    console.log('👥 User found:', user ? '✓ Yes' : '✗ No');
+    console.log('🔑 User vault password set:', user?.privateVaultPassword ? '✓ Yes' : '✗ No');
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        error: "User not found"
+      });
+    }
+
+    console.log('🔐 Comparing passwords...');
+
+    // Compare with stored password
+    if (user.privateVaultPassword === password) {
+      console.log('✅ Password matches!');
+      res.json({
+        success: true,
+        message: "Password verified",
+        authenticated: true
+      });
+    } else {
+      console.log('❌ Password does NOT match');
+      res.status(401).json({
+        success: false,
+        error: "Incorrect password",
+        authenticated: false
+      });
+    }
+  } catch (error) {
+    console.error('❌ VAULT PASSWORD ERROR:', error);
+    console.error('Error stack:', error.stack);
+    res.status(500).json({
+      success: false,
+      error: "Failed to verify password",
+      details: process.env.NODE_ENV === 'development' ? error.message : undefined
+    });
   }
 };
 
