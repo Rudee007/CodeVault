@@ -1,9 +1,8 @@
 // app.js
 const express = require('express');
 const cors = require('cors');
-const mongoose = require('mongoose');
 require('dotenv').config();
-
+const MongoDB = require('./config/db');
 const app = express();
 const linkRoutes = require('./routes/linkRoutes');
 
@@ -12,28 +11,21 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
-// Connect to MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error('MongoDB connection error:', err));
+//database connection
+MongoDB();
 
 // Routes
 const authRoutes = require('./routes/authRoutes');
-const snippetRoutes = require('./routes/snippetRoutes'); // ✅ Only this one
+const snippetRoutes = require('./routes/snippetRoutes');
 
 app.use('/api/auth', authRoutes);
-app.use('/api/snippets', snippetRoutes); // ✅ All snippet routes here
-app.use('/api', linkRoutes);  // This registers all link routes
+app.use('/api/snippets', snippetRoutes); 
+app.use('/api', linkRoutes); 
 
-// Health check endpoint
 app.get('/health', (req, res) => {
   res.json({ status: 'OK', timestamp: new Date().toISOString() });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ 
@@ -42,7 +34,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({ message: 'Route not found' });
 });

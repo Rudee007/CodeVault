@@ -9,7 +9,7 @@ const connectDB = async () =>{
             useUnifiedTopology: true,
         });
 
-        console.log('DB connected succesfully');
+        console.log('DB connected succesfully to Mongodb Atlas');
     }
     catch(er){
         console.error('Error connecting to DB', er.message);
