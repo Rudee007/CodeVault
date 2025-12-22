@@ -4,7 +4,8 @@ import feather from "feather-icons";
 import { useAuth } from "../hooks/useAuth";
 import PrivateSnippetsContent from "./PrivateSnippetsContent";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3003";
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:3003";
 
 export default function PrivateSnippetsModal({ onClose }) {
   const [password, setPassword] = useState("");
