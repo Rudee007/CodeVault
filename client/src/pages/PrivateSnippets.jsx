@@ -5,7 +5,7 @@ import Prism from "prismjs";
 import feather from "feather-icons";
 import AOS from "aos";
 
-const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:4000";
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3003";
 
 export default function PrivateSnippets({ showToast }) {
   const [snippets, setSnippets] = useState([]);

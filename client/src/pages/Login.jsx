@@ -8,7 +8,7 @@ import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 import { useAuth } from "../hooks/useAuth";
 
-const BACKEND_URL = "http://localhost:3003";
+const BACKEND_URL = import.meta.env.VITE_API_URL || "http://localhost:3003";
 const GOOGLE_CLIENT_ID = "839742597149-lbkcmssge8ssh11oc7ds0ol2tbt1ra4s.apps.googleusercontent.com";
 
 export default function Login({ showToast }) {

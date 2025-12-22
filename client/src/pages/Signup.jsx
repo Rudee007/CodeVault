@@ -6,6 +6,9 @@ import feather from "feather-icons";
 import axios from "axios";
 import { GoogleOAuthProvider, GoogleLogin } from "@react-oauth/google";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:3003";
+
 export default function Signup({ showToast }) {
   const navigate = useNavigate();
 
@@ -58,7 +61,7 @@ export default function Signup({ showToast }) {
       return;
     }
     try {
-      const res = await axios.post("http://localhost:3003/api/auth/signup", {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/signup`, {
         name: form.name,
         email: form.email,
         password: form.password,
@@ -74,7 +77,7 @@ export default function Signup({ showToast }) {
 
   const handleGoogleSuccess = async (credentialResponse) => {
     try {
-      const res = await axios.post("http://localhost:3003/api/auth/google", {
+      const res = await axios.post(`${API_BASE_URL}/api/auth/google`, {
         credential: credentialResponse.credential,
       });
       console.log("Google signup successful", res.data);

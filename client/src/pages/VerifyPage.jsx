@@ -3,6 +3,9 @@ import { useNavigate, useLocation } from "react-router-dom";
 import axios from "axios"; // ✅ Added import
 import styles from "../styles/VerifyPage.module.css";
 
+const API_BASE_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:3003";
+
 export default function VerifyPage() {
   const [status, setStatus] = useState("loading"); // "loading" | "success" | "error"
   const navigate = useNavigate();
@@ -19,7 +22,7 @@ export default function VerifyPage() {
     const verifyToken = async () => {
       try {
         const response = await axios.get(
-          `http://localhost:3003/api/auth/verify?token=${token}`
+          `${API_BASE_URL}/api/auth/verify?token=${token}`
         );
 
         // ✅ Adjust to match backend response

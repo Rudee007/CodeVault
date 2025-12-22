@@ -5,7 +5,7 @@ import Editor from 'react-simple-code-editor';
 import Prism from 'prismjs';
 import 'prismjs/themes/prism-tomorrow.css';
 
-const API_BASE_URL = 'http://localhost:3003';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3003';
 
 export default function ShareLinkPage() {
   const { shareId } = useParams();
